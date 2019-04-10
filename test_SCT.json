@@ -1,0 +1,87 @@
+{
+  "success": {
+    "receiverIban": "IT23A0336844430152923804660",
+    "receiverBic": "",
+    "receiverSwift": "",
+    "receiverName": "John Doe",
+    "description": "Payment invoice 75/2017",
+    "amount": "800.00",
+    "currency": "EUR",
+    "executionDate": "26/10/2017",
+    "urgent": "false",
+    "instant": "false",
+    "feeType": "",
+    "receiverAddress": "",
+    "receiverCity": "",
+    "receiverCountry": "",
+    "taxRelief": {
+      "taxReliefId": "L112",
+      "receiverFiscalCode": "45632198758",
+      "beneficiaryType": "NATURAL_PERSON",
+      "naturalPersonBeneficiary": {
+        "fiscalCode1": "ABCDEF81L04A859O",
+        "fiscalCode2": "",
+        "fiscalCode3": "",
+        "fiscalCode4": "",
+        "fiscalCode5": ""
+      },
+      "legalPersonBeneficiary": {
+        "fiscalCode": "",
+        "legalRepresentativeFiscalCode": ""
+      }
+    }
+  },
+  "exception1": {
+    "receiverIban": "notAnIban",
+    "receiverBic": "",
+    "receiverSwift": "",
+    "receiverName": "John Doe",
+    "description": "Payment invoice 75/2017",
+    "amount": "800.00",
+    "currency": "USD",
+    "executionDate": "26/10/2017",
+    "urgent": "false",
+    "instant": "false",
+    "feeType": "",
+    "receiverAddress": "",
+    "receiverCity": "",
+    "receiverCountry": "",
+    "taxRelief": {
+      "taxReliefId": "L112",
+      "receiverFiscalCode": "45632198758",
+      "beneficiaryType": "NATURAL_PERSON",
+      "naturalPersonBeneficiary": {
+        "fiscalCode1": "ABCDEF81L04A859O",
+        "fiscalCode2": "",
+        "fiscalCode3": "",
+        "fiscalCode4": "",
+        "fiscalCode5": ""
+      },
+      "legalPersonBeneficiary": {
+        "fiscalCode": "",
+        "legalRepresentativeFiscalCode": ""
+      }
+    }
+  },
+  "exception2": {
+    "receiverIban": "IT23A0336844430152923804660",
+    "receiverBic": "",
+    "receiverSwift": "",
+    "description": "Payment invoice 75/2017",
+    "amount": "800.00",
+    "taxRelief": {
+      "taxReliefId": "L112",
+      "receiverFiscalCode": "45632198758",
+      "beneficiaryType": "NATURAL_PERSON",
+      "naturalPersonBeneficiary": {
+        "fiscalCode1": "ABCDEF81L04A859O",
+        "fiscalCode2": "",
+        "fiscalCode3": ""
+      },
+      "legalPersonBeneficiary": {
+        "fiscalCode": "",
+        "legalRepresentativeFiscalCode": ""
+      }
+    }
+  }
+}
