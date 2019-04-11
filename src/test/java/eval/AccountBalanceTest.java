@@ -13,13 +13,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class AccountBalanceTest {
 
-    private File outputLog = new File("/output_log.txt");
+    private File outputLog = new File("output_log.txt");
 
     @Test
     public void getAccountBalanceTest(){
 
         final AccountBalanceHandler handler = new AccountBalanceHandler();
-        handler.clearLog();
 
         assertTrue(handler.showBalance("14930637"));
         //assertTrue(handler.showBalance(String.valueOf(random.nextInt(100000000)))); ???

@@ -17,7 +17,7 @@ import java.io.*;
  */
 public class CreateSCTOrderTest {
 
-    private File SCTOrderTest = new File("/test_SCT.json");
+    private File SCTOrderTest = new File("test_SCT.json");
 
     @Test
     public void sctOrderTest() {
@@ -29,9 +29,9 @@ public class CreateSCTOrderTest {
             JsonReader jsonReader = new JsonReader(reader);
             JsonObject arguments;
             arguments = gson.fromJson(jsonReader, new TypeToken<JsonElement>(){}.getType());
-            assertTrue(handler.placeSctOrder("14930637", arguments.get("success")));
-            assertFalse(handler.placeSctOrder("14930637", arguments.get("exception1")));
-            assertFalse(handler.placeSctOrder("14930637", arguments.get("exception2")));
+            assertTrue(handler.placeSctOrder("14930637", arguments.get("success").getAsJsonObject()));
+            assertFalse(handler.placeSctOrder("14930637", arguments.get("exception1").getAsJsonObject()));
+            assertFalse(handler.placeSctOrder("14930637", arguments.get("exception2").getAsJsonObject()));
         } catch (IOException e) {
             e.printStackTrace();
         }
