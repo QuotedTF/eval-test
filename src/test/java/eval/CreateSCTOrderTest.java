@@ -7,14 +7,11 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 
-/**
- * Unit test for simple AccountBalanceHandler.
- */
 public class CreateSCTOrderTest {
 
     private File SCTOrderTest = new File("test_SCT.json");
@@ -22,7 +19,7 @@ public class CreateSCTOrderTest {
     @Test
     public void sctOrderTest() {
 
-        SCTOrderHandler handler = new SCTOrderHandler();
+        final SCTOrderHandler handler = new SCTOrderHandler();
         Gson gson = new Gson();
 
         try (Reader reader = new FileReader(SCTOrderTest)) {
@@ -30,6 +27,8 @@ public class CreateSCTOrderTest {
             JsonObject arguments;
             arguments = gson.fromJson(jsonReader, new TypeToken<JsonElement>(){}.getType());
             assertTrue(handler.placeSctOrder("14930637", arguments.get("success").getAsJsonObject()));
+            assertThrows(IllegalArgumentException.class, () -> handler.placeSctOrder("14930637", arguments.get("exception1").getAsJsonObject()));
+            assertThrows(IllegalArgumentException.class, () -> handler.placeSctOrder("notAnInteger", arguments.get("exception2").getAsJsonObject()));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package eval;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,6 +19,10 @@ public class AccountBalanceHandler {
     private File outputLog = new File("output_log.txt");
 
     public boolean showBalance(String accountId) {
+
+        if(!accountId.matches("[0-9]+")){  //not sure if accountIds are just numbers or if they are fixed length
+            throw new IllegalArgumentException();
+        }
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
@@ -37,7 +42,7 @@ public class AccountBalanceHandler {
                         EntityUtils.consume(entity);
                         return false;
                     } else {
-                        throw new IllegalArgumentException();
+                        throw new HttpResponseException(response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
                     }
                 }
             }

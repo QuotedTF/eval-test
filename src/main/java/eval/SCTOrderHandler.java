@@ -2,7 +2,9 @@ package eval;
 
 import com.google.gson.JsonObject;
 
+import org.apache.commons.validator.routines.IBANValidator;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -22,6 +24,21 @@ public class SCTOrderHandler {
     private File outputLog = new File("output_log.txt");
 
     public boolean placeSctOrder(String accountId, JsonObject requestBody) {
+
+        if(!accountId.matches("[0-9]+")){  //not sure if accountIds are just numbers or if they are fixed length
+            throw new IllegalArgumentException();
+        }
+
+        if(!requestBody.get("receiverIban").getAsString().matches("IT\\d{2}[A-Z]{1}\\d{10}[A-Z0-9]{12}")){
+            throw new IllegalArgumentException();
+        }
+
+        //tried to use this but it didn't work, ended up extracting the regex from this and using it alone
+        /*IBANValidator validator = new IBANValidator();
+        //validator.setValidator("IT", 27, "IT\\d{2}[A-Z]{1}\\d{10}[A-Z0-9]{12}");
+        if(!validator.isValid(requestBody.get("receiverIban").getAsString())){
+            throw new IllegalArgumentException();
+        }*/
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
@@ -46,7 +63,7 @@ public class SCTOrderHandler {
                         EntityUtils.consume(entity);
                         return false;
                     } else {
-                        throw new IllegalArgumentException();
+                        throw new HttpResponseException(response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
                     }
                 }
             }
