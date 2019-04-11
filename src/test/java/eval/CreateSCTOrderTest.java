@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +19,7 @@ public class CreateSCTOrderTest {
 
     private File SCTOrderTest = new File("/test_SCT.json");
 
+    @Test
     public void sctOrderTest() {
 
         SCTOrderHandler handler = new SCTOrderHandler();
@@ -27,9 +29,9 @@ public class CreateSCTOrderTest {
             JsonReader jsonReader = new JsonReader(reader);
             JsonObject arguments;
             arguments = gson.fromJson(jsonReader, new TypeToken<JsonElement>(){}.getType());
-            assertTrue(handler.placeSctOrder(arguments.get("success")));
-            assertFalse(handler.placeSctOrder(arguments.get("exception1")));
-            assertFalse(handler.placeSctOrder(arguments.get("exception2")));
+            assertTrue(handler.placeSctOrder("14930637", arguments.get("success")));
+            assertFalse(handler.placeSctOrder("14930637", arguments.get("exception1")));
+            assertFalse(handler.placeSctOrder("14930637", arguments.get("exception2")));
         } catch (IOException e) {
             e.printStackTrace();
         }

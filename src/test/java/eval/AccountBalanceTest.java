@@ -1,6 +1,9 @@
 package eval;
 
+import org.junit.Test;
+
 import java.io.File;
+import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,14 +13,16 @@ import static org.junit.Assert.assertTrue;
  */
 public class AccountBalanceTest {
 
-    private File outputLog = new File("/output_log_balance.txt");
+    private File outputLog = new File("/output_log.txt");
 
+    @Test
     public void getAccountBalanceTest(){
 
-        outputLog.delete();
         final AccountBalanceHandler handler = new AccountBalanceHandler();
+        handler.clearLog();
 
         assertTrue(handler.showBalance("14930637"));
+        //assertTrue(handler.showBalance(String.valueOf(random.nextInt(100000000)))); ???
         assertTrue(outputLog.exists());
         assertFalse(handler.showBalance("thisIsNotANumber"));
     }
