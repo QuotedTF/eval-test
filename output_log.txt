@@ -121,4 +121,40 @@
          "date":"24/10/2017"
       }
    ]
+}{  
+   "status":{  
+      "code":"OK",
+      "description":"SCT Transfer request Mock Response"
+   },
+   "error":{  
+      "description":""
+   },
+   "payload":[  
+      {  
+         "orderId":"XXXXXXX",
+         "cro":"XXXXXXX",
+         "uri":"",
+         "amount":{  
+            "receiverAmount":"1.00",
+            "receiverCurrency":"EUR",
+            "exchangeRate":""
+         },
+         "feeType":"SHA",
+         "fees":[  
+            {  
+               "amount":"0.00",
+               "currency":"",
+               "code":"XXXXX",
+               "description":"Comm.Bon.Stessa Banca"
+            },
+            {  
+               "amount":"0.00",
+               "currency":"",
+               "code":"XXXXX",
+               "description":"Commissione aggiuntiva per invio bonifico"
+            }
+         ],
+         "date":"24/10/2017"
+      }
+   ]
 }
