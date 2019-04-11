@@ -1,16 +1,14 @@
 package eval;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 
-/**
- * Hello world!
- */
 public class AccountBalanceHandler {
 
     private static final String SANDBOX_URL = "https://sandbox.platfr.io";
@@ -21,32 +19,29 @@ public class AccountBalanceHandler {
 
     public boolean showBalance(String accountId) {
 
-        try {
-            URL url = new URL(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("Auth-Schema", "S2S");
-            connection.addRequestProperty("Api-key", "");
-            InputStream response = connection.getInputStream();
-            //test
-            try (Scanner scanner = new Scanner(response)) {
-                String responseBody = scanner.useDelimiter("\\A").next();
-                System.out.println(responseBody);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
+            httpGet.addHeader("Content-Type", "application/json");
+            httpGet.addHeader("Auth-Schema", "S2S");
+            httpGet.addHeader("Api-key", "");
+            try (CloseableHttpResponse response = client.execute(httpGet)) {
+                try (Writer writer = new FileWriter(outputLog)) {
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        HttpEntity entity = response.getEntity();
+                        writer.append(EntityUtils.toString(entity));
+                        EntityUtils.consume(entity);
+                        return true;
+                    } else if (response.getStatusLine().getStatusCode() == 400) {
+                        HttpEntity entity = response.getEntity();
+                        writer.append(EntityUtils.toString(entity));
+                        EntityUtils.consume(entity);
+                        return false;
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
             }
-            //check response status, print to file if good, handle 400 if bad
-            JsonParser parser = new JsonParser();
-            JsonElement jsonResponse = parser.parse(connection.getResponseMessage());
-            Writer writer = new FileWriter(outputLog);
-            if (connection.getResponseCode() == 200) {
-                writer.append("\n").append(jsonResponse.getAsJsonObject().get("payload").getAsString()).append("\n");
-                return true;
-            } else if (connection.getResponseCode() == 400) {
-                writer.append("\n").append(jsonResponse.getAsJsonObject().get("error").getAsString()).append("\n");
-                return false;
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } catch (IOException e) {
+        } catch (IOException e){
             e.printStackTrace();
             return false;
         }

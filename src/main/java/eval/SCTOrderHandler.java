@@ -1,15 +1,17 @@
 package eval;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.io.*;
 
 public class SCTOrderHandler {
 
@@ -17,30 +19,38 @@ public class SCTOrderHandler {
     private static final String ENDPOINT_TOKEN = "/api/gbs/banking/v2.1/accounts/{accountId}/payments/sct/orders";
     private static final String PARAM = "{accountId}";
 
-    public boolean placeSctOrder(String accountId, JsonElement requestBody) {
+    private File outputLog = new File("output_log.txt");
 
-        Gson gson = new Gson();
+    public boolean placeSctOrder(String accountId, JsonObject requestBody) {
 
-        try {
-            URL url = new URL(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
+            httpPost.addHeader("Content-Type", "application/json");
+            httpPost.addHeader("Auth-Schema", "S2S");
+            httpPost.addHeader("Api-key", "");
 
-            //set headers
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("Auth-Schema", "S2S");
-            connection.addRequestProperty("Api-key", "");
+            String json = requestBody.toString();
+            StringEntity jsonRequest = new StringEntity(json, ContentType.APPLICATION_JSON);
+            httpPost.setEntity(jsonRequest);
 
-            //TODO: set body parameters
-
-            InputStream response = connection.getInputStream();
-            //test
-            try(Scanner scanner = new Scanner(response)){
-                String responseBody = scanner.useDelimiter("\\A").next();
-                System.out.println(responseBody);
+            try (CloseableHttpResponse response = client.execute(httpPost)) {
+                try (Writer writer = new FileWriter(outputLog)) {
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        HttpEntity entity = response.getEntity();
+                        writer.append(EntityUtils.toString(entity));
+                        EntityUtils.consume(entity);
+                        return true;
+                    } else if (response.getStatusLine().getStatusCode() == 400) {
+                        HttpEntity entity = response.getEntity();
+                        writer.append(EntityUtils.toString(entity));
+                        EntityUtils.consume(entity);
+                        return false;
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
             }
-            //check response status, print to file if good, handle 400 if bad
-        } catch (IOException e) {
+        } catch (IOException e){
             e.printStackTrace();
         }
         return true;
