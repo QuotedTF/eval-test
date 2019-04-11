@@ -2,7 +2,6 @@ package eval;
 
 import com.google.gson.JsonObject;
 
-import org.apache.commons.validator.routines.IBANValidator;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,6 +13,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SCTOrderHandler {
 
@@ -32,13 +33,6 @@ public class SCTOrderHandler {
         if(!requestBody.get("receiverIban").getAsString().matches("IT\\d{2}[A-Z]{1}\\d{10}[A-Z0-9]{12}")){
             throw new IllegalArgumentException();
         }
-
-        //tried to use this but it didn't work, ended up extracting the regex from this and using it alone
-        /*IBANValidator validator = new IBANValidator();
-        //validator.setValidator("IT", 27, "IT\\d{2}[A-Z]{1}\\d{10}[A-Z0-9]{12}");
-        if(!validator.isValid(requestBody.get("receiverIban").getAsString())){
-            throw new IllegalArgumentException();
-        }*/
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(SANDBOX_URL + ENDPOINT_TOKEN.replace(PARAM, accountId));
@@ -68,8 +62,8 @@ public class SCTOrderHandler {
                 }
             }
         } catch (IOException e){
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.ALL, e.getMessage(), e);
+            return false;
         }
-        return true;
     }
 }

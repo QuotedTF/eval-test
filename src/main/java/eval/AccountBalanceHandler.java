@@ -9,6 +9,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AccountBalanceHandler {
 
@@ -47,7 +49,7 @@ public class AccountBalanceHandler {
                 }
             }
         } catch (IOException e){
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.ALL, e.getMessage(), e);
             return false;
         }
     }
@@ -56,7 +58,7 @@ public class AccountBalanceHandler {
         try {
             return outputLog.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.ALL, e.getMessage(), e);
             return false;
         }
     }
