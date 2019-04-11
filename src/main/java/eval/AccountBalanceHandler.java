@@ -25,7 +25,7 @@ public class AccountBalanceHandler {
             httpGet.addHeader("Auth-Schema", "S2S");
             httpGet.addHeader("Api-key", "");
             try (CloseableHttpResponse response = client.execute(httpGet)) {
-                try (Writer writer = new FileWriter(outputLog)) {
+                try (Writer writer = new FileWriter(outputLog, true)) {
                     if (response.getStatusLine().getStatusCode() == 200) {
                         HttpEntity entity = response.getEntity();
                         writer.append(EntityUtils.toString(entity));

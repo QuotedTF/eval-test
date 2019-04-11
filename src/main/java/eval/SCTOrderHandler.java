@@ -34,7 +34,7 @@ public class SCTOrderHandler {
             httpPost.setEntity(jsonRequest);
 
             try (CloseableHttpResponse response = client.execute(httpPost)) {
-                try (Writer writer = new FileWriter(outputLog)) {
+                try (Writer writer = new FileWriter(outputLog, true)) {
                     if (response.getStatusLine().getStatusCode() == 200) {
                         HttpEntity entity = response.getEntity();
                         writer.append(EntityUtils.toString(entity));
